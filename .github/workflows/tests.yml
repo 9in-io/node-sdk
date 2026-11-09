@@ -1,0 +1,57 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          # package-lock.json is not tracked, so there is nothing to key a cache on.
+          package-manager-cache: false
+
+      # The PHP SDK for the PHP <-> @9in-io/sdk interop tests (src/__test__/interop).
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - uses: actions/checkout@v7
+        with:
+          repository: 9in-io/php-sdk
+          path: .php-sdk
+
+      - name: Install the PHP SDK
+        run: composer install --no-dev --no-interaction --no-progress --working-dir=.php-sdk
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Type-check and build
+        run: npm run build
+
+      - name: Run tests
+        run: npm test
+        env:
+          NINE_PHP_SDK_PATH: ${{ github.workspace }}/.php-sdk
