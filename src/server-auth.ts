@@ -220,11 +220,20 @@ export class ServerAuth {
         return (await res.json()) as Record<string, unknown>;
     }
 
+    /**
+     * Revokes a refresh token (and its rotation family) or an access token. 9in answers 200
+     * for tokens that are unknown or already revoked (RFC 7009), so anything else is a real
+     * failure (e.g. invalid_client) and throws `NineError`.
+     */
     async revoke(token: string, hint: 'refresh_token' | 'access_token' = 'refresh_token'): Promise<void> {
         const endpoint = (await this.discovery()).revocation_endpoint;
         if (!endpoint) return;
         const form: Record<string, string> = {token, token_type_hint: hint};
-        await this.fetcher(endpoint, {method: 'POST', headers: this.clientHeaders(form), body: new URLSearchParams(form)});
+        const res = await this.fetcher(endpoint, {method: 'POST', headers: this.clientHeaders(form), body: new URLSearchParams(form)});
+        if (!res.ok) {
+            const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+            throw new NineError(String(json.error ?? 'revocation_failed'), json.error_description ? String(json.error_description) : `HTTP ${res.status}`, res.status);
+        }
     }
 
     /** URL that ends the 9in session; `returnTo` must be a registered logout URL. */

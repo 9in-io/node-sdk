@@ -98,6 +98,11 @@ export declare class ServerAuth {
     /** Token for your own back end (client_credentials; confidential clients). */
     clientCredentials(scope?: string, audience?: string): Promise<ServerTokenSet>;
     userInfo(accessToken: string): Promise<Record<string, unknown>>;
+    /**
+     * Revokes a refresh token (and its rotation family) or an access token. 9in answers 200
+     * for tokens that are unknown or already revoked (RFC 7009), so anything else is a real
+     * failure (e.g. invalid_client) and throws `NineError`.
+     */
     revoke(token: string, hint?: 'refresh_token' | 'access_token'): Promise<void>;
     /** URL that ends the 9in session; `returnTo` must be a registered logout URL. */
     logoutUrl(options?: {
