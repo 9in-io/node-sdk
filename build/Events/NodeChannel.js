@@ -7,6 +7,7 @@ exports.NodeChannel = void 0;
 const Channel_1 = require("./Channel");
 const events_1 = __importDefault(require("events"));
 class NodeChannel extends Channel_1.Channel {
+    eventEmitter;
     constructor(eventEmitterOptions) {
         super();
         this.eventEmitter = new events_1.default(eventEmitterOptions);

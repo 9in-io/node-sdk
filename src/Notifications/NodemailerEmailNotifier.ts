@@ -1,6 +1,6 @@
 import {Notifications} from ".";
 import {Notifier} from "./Notifier";
-import nodemailer from "nodemailer";
+import type nodemailer from "nodemailer";
 
 export class NodemailerEmailNotifier extends Notifier {
     private client: nodemailer.Transporter;

@@ -1,4 +1,2 @@
-export {APIError} from "./APIError";
-export {InvalidTokenError} from "./InvalidTokenError";
-export {SignatureVerificationError} from "./SignatureVerificationError";
+export {BaseError} from "./BaseError";
 export {TemplateNotFoundError} from "./TemplateNotFoundError";

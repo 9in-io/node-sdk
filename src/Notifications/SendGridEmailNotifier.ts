@@ -1,6 +1,6 @@
 import {Notifications} from ".";
 import {Notifier} from "./Notifier";
-import sgMail from '@sendgrid/mail';
+import type sgMail from '@sendgrid/mail';
 
 export class SendGridEmailNotifier extends Notifier {
     private client: typeof sgMail;

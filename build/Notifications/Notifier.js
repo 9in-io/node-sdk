@@ -15,29 +15,33 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Notifier = void 0;
 const Errors_1 = require("../Errors");
 const fs = __importStar(require("fs/promises"));
 class Notifier {
+    channel;
+    sender;
+    vars;
+    templates = {};
     constructor(channel, sender, templates = [], vars = {}) {
-        this.templates = {};
         this.channel = channel;
         this.sender = sender;
         this.vars = vars;
@@ -45,22 +49,20 @@ class Notifier {
             this.templates[this.templateKey(template.name)] = template;
         });
     }
-    render(template, data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tpl = this.templates[this.templateKey(template)];
-            if (!tpl) {
-                throw new Errors_1.TemplateNotFoundError(template);
-            }
-            const templateContent = yield fs.readFile(tpl.path, 'utf8');
-            const viewData = {
-                vars: this.vars,
-                data: data,
-            };
-            if (!tpl.engine) {
-                return JSON.stringify(viewData);
-            }
-            return yield tpl.engine.render(templateContent.trim(), viewData);
-        });
+    async render(template, data) {
+        const tpl = this.templates[this.templateKey(template)];
+        if (!tpl) {
+            throw new Errors_1.TemplateNotFoundError(template);
+        }
+        const templateContent = await fs.readFile(tpl.path, 'utf8');
+        const viewData = {
+            vars: this.vars,
+            data: data,
+        };
+        if (!tpl.engine) {
+            return JSON.stringify(viewData);
+        }
+        return await tpl.engine.render(templateContent.trim(), viewData);
     }
     setTemplate(template) {
         if (Array.isArray(template)) {

@@ -1,6 +1,6 @@
 import {Notifications} from ".";
 import {Notifier} from "./Notifier";
-import {Twilio} from "twilio";
+import type {Twilio} from "twilio";
 
 export class TwilioSMSNotifier extends Notifier {
     private client: Twilio;

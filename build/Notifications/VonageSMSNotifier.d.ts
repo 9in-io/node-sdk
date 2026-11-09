@@ -1,6 +1,6 @@
 import { Notifications } from ".";
 import { Notifier } from "./Notifier";
-import { Vonage } from "@vonage/server-sdk";
+import type { Vonage } from "@vonage/server-sdk";
 export declare class VonageSMSNotifier extends Notifier {
     private client;
     constructor(vonage: Vonage, channel: Notifications.Channel, sender: string, templates?: Notifications.Template[], vars?: any);

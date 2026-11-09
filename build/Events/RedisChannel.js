@@ -3,10 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RedisChannel = void 0;
 const Channel_1 = require("./Channel");
 class RedisChannel extends Channel_1.Channel {
+    publisher;
+    subscriber;
+    channelPrefix;
+    messageQueue = [];
+    handlers = {};
     constructor(publisher, subscriber, channelPrefix = 'sso:') {
         super();
-        this.messageQueue = [];
-        this.handlers = {};
         this.publisher = publisher;
         this.subscriber = subscriber;
         this.channelPrefix = channelPrefix;
@@ -34,7 +37,7 @@ class RedisChannel extends Channel_1.Channel {
         }
     }
     actualEmit(event, message) {
-        this.publisher.publish(this.channelPrefix + event, JSON.stringify(message !== null && message !== void 0 ? message : {}));
+        this.publisher.publish(this.channelPrefix + event, JSON.stringify(message ?? {}));
     }
     actualSubscribe(event) {
         this.subscriber.subscribe(this.channelPrefix + event, (message) => {
@@ -42,7 +45,7 @@ class RedisChannel extends Channel_1.Channel {
             if (!this.handlers[event]) {
                 return;
             }
-            const parsedMessage = JSON.parse(message !== null && message !== void 0 ? message : '{}');
+            const parsedMessage = JSON.parse(message ?? '{}');
             for (const handler of this.handlers[event]) {
                 handler(event, parsedMessage);
             }

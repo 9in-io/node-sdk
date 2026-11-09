@@ -6,4 +6,4 @@ var Channel;
     Channel["EMAIL"] = "email";
     Channel["SMS"] = "sms";
     Channel["CALL"] = "call";
-})(Channel = exports.Channel || (exports.Channel = {}));
+})(Channel || (exports.Channel = Channel = {}));

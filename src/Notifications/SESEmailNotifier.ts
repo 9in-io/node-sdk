@@ -1,6 +1,6 @@
 import {Notifications} from ".";
 import {Notifier} from "./Notifier";
-import AWS from 'aws-sdk';
+import type AWS from 'aws-sdk';
 
 export class SESEmailNotifier extends Notifier {
     private client: AWS.SES;

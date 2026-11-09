@@ -1,6 +1,6 @@
 import {Notifications} from ".";
 import {Notifier} from "./Notifier";
-import {Vonage} from "@vonage/server-sdk";
+import type {Vonage} from "@vonage/server-sdk";
 
 export class VonageSMSNotifier extends Notifier {
     private client: Vonage;

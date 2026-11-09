@@ -1,11 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TemplateNotFoundError = exports.SignatureVerificationError = exports.InvalidTokenError = exports.APIError = void 0;
-var APIError_1 = require("./APIError");
-Object.defineProperty(exports, "APIError", { enumerable: true, get: function () { return APIError_1.APIError; } });
-var InvalidTokenError_1 = require("./InvalidTokenError");
-Object.defineProperty(exports, "InvalidTokenError", { enumerable: true, get: function () { return InvalidTokenError_1.InvalidTokenError; } });
-var SignatureVerificationError_1 = require("./SignatureVerificationError");
-Object.defineProperty(exports, "SignatureVerificationError", { enumerable: true, get: function () { return SignatureVerificationError_1.SignatureVerificationError; } });
+exports.TemplateNotFoundError = exports.BaseError = void 0;
+var BaseError_1 = require("./BaseError");
+Object.defineProperty(exports, "BaseError", { enumerable: true, get: function () { return BaseError_1.BaseError; } });
 var TemplateNotFoundError_1 = require("./TemplateNotFoundError");
 Object.defineProperty(exports, "TemplateNotFoundError", { enumerable: true, get: function () { return TemplateNotFoundError_1.TemplateNotFoundError; } });
