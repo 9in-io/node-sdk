@@ -1,12 +1,13 @@
 # CHANGELOG
 
-## 3.0.2 - 2026-11-09
+## 3.1.0 - 2026-11-09
 
 * `ServerAuth.revoke()` throws `NineError` when 9in refuses the revocation (for example `invalid_client`
   with a wrong secret, or a 5xx). It used to ignore the answer, so a failed revocation looked successful.
   Unknown or already revoked tokens still succeed (RFC 7009). Catch the error where logging out must
   not fail.
-* Built against `@9in-io/sdk` 0.1.1.
+* Requires `@9in-io/sdk` 0.1.1, which adds `ManagementClient.findUser(type, value)`, `listUserSessions()`,
+  `revokeSession()` and `importUsers(users, {onConflict, source})` (re-exported here).
 
 ## 3.0.1 - 2026-11-09
 
