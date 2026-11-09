@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServerAuth = void 0;
 exports.codeChallenge = codeChallenge;
 const node_crypto_1 = require("node:crypto");
-const server_1 = require("@9in/sdk/server");
+const server_1 = require("@9in-io/sdk/server");
 const id_token_1 = require("./id-token");
 const discoveryCache = new Map();
 function base64Url(bytes) {

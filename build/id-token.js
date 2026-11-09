@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifySignatureWithJwk = verifySignatureWithJwk;
 exports.verifyIdToken = verifyIdToken;
 const node_crypto_1 = require("node:crypto");
-const server_1 = require("@9in/sdk/server");
+const server_1 = require("@9in-io/sdk/server");
 const HASH = { RS256: 'sha256', RS384: 'sha384', RS512: 'sha512', PS256: 'sha256', PS384: 'sha384', PS512: 'sha512', ES256: 'sha256', ES384: 'sha384' };
 const SALT = { PS256: 32, PS384: 48, PS512: 64 };
 const KEY_TYPE = {

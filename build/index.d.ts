@@ -1,11 +1,11 @@
 /**
- * @9in/node: the 9in SDK for Node.js.
+ * @9in-io/node: the 9in SDK for Node.js.
  *
- * Everything from `@9in/sdk/server` (verifyAccessToken, ManagementClient, adapterHandler,
+ * Everything from `@9in-io/sdk/server` (verifyAccessToken, ManagementClient, adapterHandler,
  * verifyWebhook, verifySignature, signPayload, NineError and the types) is re-exported,
  * plus Node-specific helpers.
  */
-export * from '@9in/sdk/server';
+export * from '@9in-io/sdk/server';
 export { env, envSource, configFromEnv, LEGACY_ENV } from './env';
 export { readRawBody, toRequest, sendResponse, toNodeHandler } from './node-http';
 export type { NodeRequest, NextFunction, FetchHandler } from './node-http';

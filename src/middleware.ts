@@ -13,7 +13,7 @@ import {
     type TokenVerifierOptions,
     type VerificationMode,
     type WebhookEvent,
-} from '@9in/sdk/server';
+} from '@9in-io/sdk/server';
 import {readRawBody, toNodeHandler, type NextFunction, type NodeRequest} from './node-http';
 
 export interface AuthenticatedRequest extends NodeRequest {
@@ -177,7 +177,7 @@ export function webhookHandler(secret: string | string[], onEvent: (event: Webho
 
 /**
  * Adapter protocol v2 for node:http / Express / Connect (wraps `adapterHandler` from
- * @9in/sdk). Serves `<mount>/authenticate`, `<mount>/user` and `<mount>/event`.
+ * @9in-io/sdk). Serves `<mount>/authenticate`, `<mount>/user` and `<mount>/event`.
  *
  *   app.use('/nine', adapterMiddleware({secret, authenticate, findUser, onEvent}))
  */

@@ -1,7 +1,7 @@
 {
-  "name": "@9in/node",
-  "version": "3.0.0",
-  "description": "Official 9in SDK for Node.js, built on @9in/sdk: server-side sign-in, Express/Connect middleware for access tokens and webhooks, adapter v2 handler for node:http, and OTP delivery.",
+  "name": "@9in-io/node",
+  "version": "3.0.1",
+  "description": "Official 9in SDK for Node.js, built on @9in-io/sdk: server-side sign-in, Express/Connect middleware for access tokens and webhooks, adapter v2 handler for node:http, and OTP delivery.",
   "keywords": [
     "9in",
     "sso",
@@ -36,7 +36,7 @@
     "node": ">=20.19"
   },
   "dependencies": {
-    "@9in/sdk": "^0.1.0",
+    "@9in-io/sdk": "^0.1.0",
     "handlebars": "^4.7.8"
   },
   "devDependencies": {

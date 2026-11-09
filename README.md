@@ -3,11 +3,11 @@
 
 <img src="docs/img/logo.png" width="160" alt="9in"/>
 
-Official Node.js SDK for [9in](https://9in.io), built on [`@9in/sdk`](https://www.npmjs.com/package/@9in/sdk).
+Official Node.js SDK for [9in](https://9in.io), built on [`@9in-io/sdk`](https://www.npmjs.com/package/@9in-io/sdk).
 
-`@9in/node` re-exports everything from `@9in/sdk/server` and adds what only Node needs:
+`@9in-io/node` re-exports everything from `@9in-io/sdk/server` and adds what only Node needs:
 
-- **`verifyAccessToken`, `ManagementClient`, `adapterHandler`, `verifyWebhook`** (from `@9in/sdk`).
+- **`verifyAccessToken`, `ManagementClient`, `adapterHandler`, `verifyWebhook`** (from `@9in-io/sdk`).
 - **`requireAuth()`**: Express / Connect middleware that verifies access tokens locally against
   your tenant's JWKS.
 - **`webhookHandler()` / `verifyWebhookMiddleware()`**: signed webhooks for node:http and Express.
@@ -19,20 +19,20 @@ Official Node.js SDK for [9in](https://9in.io), built on [`@9in/sdk`](https://ww
   Vonage, console) to deliver one-time codes for adapter users.
 - **`env()`**: `NINE_*` settings with the old `SSOFY_*` names as fallbacks.
 
-Requires Node.js 20.19+ (it `require()`s the ESM `@9in/sdk`).
+Requires Node.js 20.19+ (it `require()`s the ESM `@9in-io/sdk`).
 
 ```bash
-npm install @9in/node
+npm install @9in-io/node
 ```
 
-Writing a browser app? Use `@9in/sdk` (`NineAuth`) directly. Upgrading from
+Writing a browser app? Use `@9in-io/sdk` (`NineAuth`) directly. Upgrading from
 `@ssofy/node-sdk` 2.x? Read [MIGRATION.md](MIGRATION.md).
 
 ## Protect an API
 
 ```ts
 import express from 'express';
-import {requireAuth, type AuthenticatedRequest} from '@9in/node';
+import {requireAuth, type AuthenticatedRequest} from '@9in-io/node';
 
 const app = express();
 const auth = requireAuth({issuer: 'https://acme.9in.io', audience: 'https://api.acme.com'});
@@ -70,7 +70,7 @@ Missing, expired or foreign tokens get `401` with `WWW-Authenticate`. Pass
 
 ```ts
 import session from 'express-session';
-import {ServerAuth} from '@9in/node';
+import {ServerAuth} from '@9in-io/node';
 
 const auth = new ServerAuth({
     issuer: process.env.NINE_ISSUER!,
@@ -105,7 +105,7 @@ app.get('/logout', async (req, res) => {
 ## Manage users
 
 ```ts
-import {ManagementClient} from '@9in/node';
+import {ManagementClient} from '@9in-io/node';
 
 const nine = new ManagementClient({issuer, clientId, clientSecret});   // application with management scopes
 await nine.createUser({email: 'jane@acme.com', password: '…', emailVerified: true});
@@ -115,7 +115,7 @@ const {url} = await nine.createLoginLink(userId, {returnTo: 'https://app.acme.co
 ## Webhooks
 
 ```ts
-import {webhookHandler} from '@9in/node';
+import {webhookHandler} from '@9in-io/node';
 
 // Mount before express.json(): the signature covers the raw body.
 app.post('/webhooks/9in', webhookHandler(process.env.NINE_WEBHOOK_SECRET!, async (event) => {
@@ -132,7 +132,7 @@ a retry that arrives while the first delivery is still running gets `409`.
 ## Keep users in your own database (adapter v2)
 
 ```ts
-import {adapterMiddleware, otpSender, Notifications} from '@9in/node';
+import {adapterMiddleware, otpSender, Notifications} from '@9in-io/node';
 
 const sendOtp = otpSender({
     email: new Notifications.NodemailerEmailNotifier(transporter, Notifications.Channel.EMAIL, 'no-reply@acme.com', [{name: 'otp', channel: Notifications.Channel.EMAIL, path: './otp.email.hbs', engine: new Notifications.HandlebarsEngine()}]),
@@ -158,8 +158,8 @@ app.use('/nine', adapterMiddleware({
 ```
 
 For a ready-made Express router with these pieces, see
-[`@9in/express-server`](https://github.com/9in-io/express-server). On Workers, Deno, Bun or
-Next.js route handlers use `adapterHandler` from `@9in/sdk/server` directly.
+[`@9in-io/express-server`](https://github.com/9in-io/express-server). On Workers, Deno, Bun or
+Next.js route handlers use `adapterHandler` from `@9in-io/sdk/server` directly.
 
 ## Configuration
 
@@ -181,7 +181,7 @@ is accepted for `localhost`, `*.localhost` and loopback addresses; pass
 ## Development
 
 ```bash
-npm install     # links @9in/sdk from ../../v2/packages/sdk (see package.json)
+npm install     # links @9in-io/sdk from ../../v2/packages/sdk (see package.json)
 npm test        # jest; includes an interop test against ../php (9in/php-sdk) when PHP is installed
 npm run build
 ```

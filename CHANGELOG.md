@@ -1,16 +1,21 @@
 # CHANGELOG
 
-## 3.0.0 - unreleased
+## 3.0.1 - 2026-11-09
 
-Rebranded as **9in** (`@9in/node`) and rebuilt on `@9in/sdk`. See [MIGRATION.md](MIGRATION.md).
+First release on npm, as `@9in-io/node`: the npm organisation `9in` belongs to someone else, so the 9in
+packages are published under `@9in-io` (the name of 9in's GitHub account). Same code as 3.0.0.
 
-* Re-exports `@9in/sdk/server`: `verifyAccessToken` (local JWKS verification), `ManagementClient`, `adapterHandler`, `verifyWebhook`, `verifySignature`, `signPayload`, `NineError`.
+## 3.0.0 - 2026-11-09 (not published to npm)
+
+Rebranded as **9in** (`@9in-io/node`) and rebuilt on `@9in-io/sdk`. See [MIGRATION.md](MIGRATION.md).
+
+* Re-exports `@9in-io/sdk/server`: `verifyAccessToken` (local JWKS verification), `ManagementClient`, `adapterHandler`, `verifyWebhook`, `verifySignature`, `signPayload`, `NineError`.
 * Express / Connect / node:http helpers: `requireAuth`, `webhookHandler`, `verifyWebhookMiddleware`, `adapterMiddleware`, `toNodeHandler`, `toRequest`, `sendResponse`, `readRawBody`.
 * `requireAuth({mode})`: `local`, `hybrid` (default with clientId/clientSecret) or `introspect` through `createTokenVerifier`; every key-library algorithm, opaque tokens; `.verifier` for `webhookHandler(…, {verifier})`, which evicts on `token.revoked`, `session.revoked` and `user.*`.
 * `verifyIdToken` (used by `ServerAuth`): ID tokens signed with any asymmetric algorithm (RS/PS/ES/EdDSA).
 * `ServerAuth`: server-side OIDC sign-in with PKCE, ID token verification, refresh rotation, revocation and logout.
 * `otpSender()` delivers adapter `otp.requested` codes with the existing notifiers.
-* `webhookHandler(…, {dedupe})` calls `onEvent` once per event id (`processEventOnce` from `@9in/sdk`).
+* `webhookHandler(…, {dedupe})` calls `onEvent` once per event id (`processEventOnce` from `@9in-io/sdk`).
 * Issuers must use https (`allowInsecureIssuer` for development hosts); checked when `ServerAuth` / `requireAuth` are created.
 * `env()` / `configFromEnv()`: `NINE_*` with `SSOFY_*` fallbacks.
 * Removed: `APIClient`, `OAuth2Client` re-exports, v1 signatures, storages, and the v1 resource-server toolkit (repositories, datasources, filters, transformers, entities; moved to `legacy/v1-toolkit`, not published).

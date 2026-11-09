@@ -2,13 +2,13 @@ import {describe, expect, it} from '@jest/globals';
 import {execFileSync, spawnSync} from 'node:child_process';
 import {existsSync} from 'node:fs';
 import {join, resolve} from 'node:path';
-import {signPayload, verifySignature, verifyWebhook} from '@9in/sdk/server';
+import {signPayload, verifySignature, verifyWebhook} from '@9in-io/sdk/server';
 import {fakeTenant} from '../helpers';
 
 /**
- * Interop between the PHP SDK (9in/php-sdk) and @9in/sdk: requests signed by @9in/sdk are
+ * Interop between the PHP SDK (9in/php-sdk) and @9in-io/sdk: requests signed by @9in-io/sdk are
  * accepted by the PHP AdapterHandler, PHP-signed responses and webhooks verify with
- * @9in/sdk. Needs `php` and an installed PHP SDK (NINE_PHP_SDK_PATH, default ../php).
+ * @9in-io/sdk. Needs `php` and an installed PHP SDK (NINE_PHP_SDK_PATH, default ../php).
  */
 const phpSdk = resolve(process.env.NINE_PHP_SDK_PATH ?? join(__dirname, '../../../../php'));
 const phpAvailable = spawnSync('php', ['-v']).status === 0 && existsSync(join(phpSdk, 'vendor/autoload.php'));
@@ -19,11 +19,11 @@ function php(input: Record<string, unknown>): any {
     return JSON.parse(output.toString('utf8'));
 }
 
-(phpAvailable ? describe : describe.skip)('PHP SDK ↔ @9in/sdk', () => {
+(phpAvailable ? describe : describe.skip)('PHP SDK ↔ @9in-io/sdk', () => {
     const secret = 'interop_secret_ä';
     const path = '/nine/authenticate';
 
-    it('PHP AdapterHandler accepts @9in/sdk requests and its responses verify with @9in/sdk', async () => {
+    it('PHP AdapterHandler accepts @9in-io/sdk requests and its responses verify with @9in-io/sdk', async () => {
         const body = JSON.stringify({identifier: {type: 'email', value: 'jane@acme.test'}, password: 'hunter2'});
         const result = php({
             mode: 'adapter',
@@ -39,7 +39,7 @@ function php(input: Record<string, unknown>): any {
         expect(await verifySignature(secret, result.headers['9in-signature'], 'POST', `${path}#other`, result.body)).toBe(false);
     });
 
-    it('PHP rejects requests that @9in/sdk signed for another path or secret', async () => {
+    it('PHP rejects requests that @9in-io/sdk signed for another path or secret', async () => {
         const body = JSON.stringify({identifier: {type: 'email', value: 'jane@acme.test'}, password: 'hunter2'});
         for (const header of [await signPayload(secret, 'POST', '/nine/user', body), await signPayload('other', 'POST', path, body)]) {
             const result = php({mode: 'adapter', secret, path, headers: {'9in-signature': header}, body});

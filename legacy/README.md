@@ -2,7 +2,7 @@
 
 `v1-toolkit/` is the SSOfy 2.x resource-server toolkit (datasource connections, client /
 scope / OTP / social-link / user repositories, filters, transformers, entity models,
-helpers). It was moved here unchanged when the package became `@9in/node` 3.0, including
+helpers). It was moved here unchanged when the package became `@9in-io/node` 3.0, including
 an uncommitted refactor that was in progress at the time (FilterGroup queries in
 `Datasource/*`, `Models/Filter.ts`, `Models/Sort.ts`, …), so that work is not lost.
 

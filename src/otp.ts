@@ -1,4 +1,4 @@
-import type {AdapterEvent} from '@9in/sdk/server';
+import type {AdapterEvent} from '@9in-io/sdk/server';
 import type {Notifier} from './Notifications/Notifier';
 
 /** Payload of the adapter event `otp.requested`. */

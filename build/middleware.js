@@ -4,7 +4,7 @@ exports.requireAuth = requireAuth;
 exports.verifyWebhookMiddleware = verifyWebhookMiddleware;
 exports.webhookHandler = webhookHandler;
 exports.adapterMiddleware = adapterMiddleware;
-const server_1 = require("@9in/sdk/server");
+const server_1 = require("@9in-io/sdk/server");
 const node_http_1 = require("./node-http");
 function json(res, status, body, headers = {}) {
     res.statusCode = status;
@@ -122,7 +122,7 @@ function webhookHandler(secret, onEvent, options = {}) {
 }
 /**
  * Adapter protocol v2 for node:http / Express / Connect (wraps `adapterHandler` from
- * @9in/sdk). Serves `<mount>/authenticate`, `<mount>/user` and `<mount>/event`.
+ * @9in-io/sdk). Serves `<mount>/authenticate`, `<mount>/user` and `<mount>/event`.
  *
  *   app.use('/nine', adapterMiddleware({secret, authenticate, findUser, onEvent}))
  */

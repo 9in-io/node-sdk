@@ -16,13 +16,13 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TemplateNotFoundError = exports.BaseError = exports.otpSender = exports.codeChallenge = exports.ServerAuth = exports.verifyIdToken = exports.adapterMiddleware = exports.webhookHandler = exports.verifyWebhookMiddleware = exports.requireAuth = exports.toNodeHandler = exports.sendResponse = exports.toRequest = exports.readRawBody = exports.LEGACY_ENV = exports.configFromEnv = exports.envSource = exports.env = void 0;
 /**
- * @9in/node: the 9in SDK for Node.js.
+ * @9in-io/node: the 9in SDK for Node.js.
  *
- * Everything from `@9in/sdk/server` (verifyAccessToken, ManagementClient, adapterHandler,
+ * Everything from `@9in-io/sdk/server` (verifyAccessToken, ManagementClient, adapterHandler,
  * verifyWebhook, verifySignature, signPayload, NineError and the types) is re-exported,
  * plus Node-specific helpers.
  */
-__exportStar(require("@9in/sdk/server"), exports);
+__exportStar(require("@9in-io/sdk/server"), exports);
 var env_1 = require("./env");
 Object.defineProperty(exports, "env", { enumerable: true, get: function () { return env_1.env; } });
 Object.defineProperty(exports, "envSource", { enumerable: true, get: function () { return env_1.envSource; } });

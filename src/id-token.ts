@@ -1,5 +1,5 @@
 import {createPublicKey, verify as cryptoVerify, type JsonWebKey, type KeyObject} from 'node:crypto';
-import {NineError, normalizeIssuer} from '@9in/sdk/server';
+import {NineError, normalizeIssuer} from '@9in-io/sdk/server';
 
 /**
  * ID token verification for server-side sign-in. `verifyAccessToken` only accepts access

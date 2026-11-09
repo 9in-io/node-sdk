@@ -1,5 +1,5 @@
 import type { ServerResponse } from 'node:http';
-import { type AccessTokenClaims, type AdapterHandlers, type EventStore, type TokenVerifier, type TokenVerifierOptions, type VerificationMode, type WebhookEvent } from '@9in/sdk/server';
+import { type AccessTokenClaims, type AdapterHandlers, type EventStore, type TokenVerifier, type TokenVerifierOptions, type VerificationMode, type WebhookEvent } from '@9in-io/sdk/server';
 import { type NextFunction, type NodeRequest } from './node-http';
 export interface AuthenticatedRequest extends NodeRequest {
     /** Claims of the verified access token. */
@@ -74,7 +74,7 @@ export declare function verifyWebhookMiddleware(secret: string | string[], optio
 export declare function webhookHandler(secret: string | string[], onEvent: (event: WebhookEvent) => unknown, options?: WebhookHandlerOptions): (req: WebhookRequest, res: ServerResponse, next?: NextFunction) => Promise<void>;
 /**
  * Adapter protocol v2 for node:http / Express / Connect (wraps `adapterHandler` from
- * @9in/sdk). Serves `<mount>/authenticate`, `<mount>/user` and `<mount>/event`.
+ * @9in-io/sdk). Serves `<mount>/authenticate`, `<mount>/user` and `<mount>/event`.
  *
  *   app.use('/nine', adapterMiddleware({secret, authenticate, findUser, onEvent}))
  */

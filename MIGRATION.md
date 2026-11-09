@@ -1,14 +1,14 @@
-# Migrating from `@ssofy/node-sdk` 2.x to `@9in/node` 3.x
+# Migrating from `@ssofy/node-sdk` 2.x to `@9in-io/node` 3.x
 
 SSOfy is now [9in](https://9in.io). 3.0 is a new major version under a new package name,
-built on [`@9in/sdk`](https://www.npmjs.com/package/@9in/sdk) (the single 9in
+built on [`@9in-io/sdk`](https://www.npmjs.com/package/@9in-io/sdk) (the single 9in
 JavaScript SDK) and speaking the 9in v2 protocol.
 
 **Upgrading is required to use 9in.** `@ssofy/node-sdk` 2.x only talks to the SSOfy service (the signed `/v1/*` API and the 8-endpoint resource server). That service has shut down (ssofy.com has lapsed), and 9in does not serve the SSOfy v1 protocol, so 2.x does not work against 9in. The old versions stay published but are no longer maintained. Move to 3.x as part of moving the app to 9in.
 
 ```bash
 npm uninstall @ssofy/node-sdk @ssofy/javascript-sdk
-npm install @9in/node
+npm install @9in-io/node
 ```
 
 Node.js 20.19+ is required.
@@ -22,7 +22,7 @@ Node.js 20.19+ is required.
 | `APIClient.authenticatedUser(token)` | Claims from `verifyAccessToken`, or `ServerAuth.userInfo(token)` |
 | `APIClient.findUserById(id)` | `new ManagementClient({issuer, clientId, clientSecret}).getUser(id)` |
 | `APIClient.invalidateTokenCache()`, `purgeTokenCache()` | `verifier.handleEvent(event)` / `webhookHandler(…, {verifier})` on `token.revoked`, `session.revoked`, `user.*`; `verifier.clear()` |
-| `OAuth2Client` / `OAuth2Config` (re-exported from `@ssofy/javascript-sdk`) | `ServerAuth` on the server, `NineAuth` from `@9in/sdk` in the browser |
+| `OAuth2Client` / `OAuth2Config` (re-exported from `@ssofy/javascript-sdk`) | `ServerAuth` on the server, `NineAuth` from `@9in-io/sdk` in the browser |
 | `OAuth2Client.initAuthCodeFlow(url, next)` | `ServerAuth.createLogin({returnTo})` → `{url, pending}` (keep `pending` in the session) |
 | `OAuth2Client.handleCallback(payload)` | `ServerAuth.handleCallback(req.originalUrl, pending)` |
 | `OAuth2Client.getAccessToken(state)` / `renewAccessToken(state)` | `ServerAuth.ensureFresh(tokens)` / `refresh(tokens)` |

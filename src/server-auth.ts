@@ -1,11 +1,11 @@
 import {createHash, randomBytes, timingSafeEqual} from 'node:crypto';
-import {NineError, normalizeIssuer} from '@9in/sdk/server';
+import {NineError, normalizeIssuer} from '@9in-io/sdk/server';
 import {verifyIdToken} from './id-token';
 
 /**
  * Server-side sign-in for web apps (Express, Fastify, Next.js API routes, …): the
  * authorization code flow with PKCE, as a confidential client when you pass a secret.
- * `NineAuth` from @9in/sdk is the browser counterpart.
+ * `NineAuth` from @9in-io/sdk is the browser counterpart.
  *
  *   const auth = new ServerAuth({issuer, clientId, clientSecret, redirectUri});
  *
