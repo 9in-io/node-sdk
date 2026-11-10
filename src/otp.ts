@@ -32,7 +32,7 @@ export interface OtpSenderOptions {
 export function otpSender(options: OtpSenderOptions) {
     const template = options.template ?? 'otp';
     return async (event: AdapterEvent): Promise<boolean> => {
-        if (event.event !== 'otp.requested') return false;
+        if (event.event_type !== 'otp.requested') return false;
         const data = event.data as unknown as OtpRequestedData;
         const notifier = data.channel === 'sms' ? options.sms : options.email;
         if (!notifier) throw new Error(`9in: no notifier configured for ${data.channel} codes`);

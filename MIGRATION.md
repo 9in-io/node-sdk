@@ -8,12 +8,12 @@ and coming out, and ISO 8601 UTC strings for times. Upgrade together with the 9i
 
 | 3.x | 4.x |
 |---|---|
-| `event.type` | `event.event` |
+| `event.type` | `event.event_type` |
 | `event.createdAt` | `event.created_at` |
 | `event.data.userId` | `event.data.user.id` (for `user.deleted`, the user as it was before the deletion) |
 | `token.revoked`: `data.type`, `data.clientId` | `data.token_type`, `data.client_id` |
 | `user.login`: `data.client` | `data.client_id` |
-| Adapter event `type`, `createdAt` | `event`, `created_at` |
+| Adapter event `type`, `createdAt` | `event_type`, `created_at` |
 | `otp.requested` `data.userId`, `data.expiresAt` (and OTP template variables) | `data.user_id`, `data.expires_at` |
 | `createUser({emailVerified, phone, phoneVerified, passwordHash})` | `createUser({email_verified, phone_number, phone_number_verified, password_hash})` (the old names are refused) |
 | `importUsers([{createdAt: 1680343200000}])` (ms) | `importUsers([{created_at: '2023-04-01T10:00:00Z'}])` |

@@ -93,7 +93,7 @@ describe('ServerAuth beyond sign-in', () => {
 
 describe('verifyWebhookMiddleware', () => {
     const secret = 'whsec_mw';
-    const event = {id: 'evt_9', event: 'user.updated', created_at: '2026-11-09T10:00:00.000Z', tenant: 'tnt_1', environment: 'production', data: {fields: ['name'], user: {id: 'usr_1'}}};
+    const event = {id: 'evt_9', event_type: 'user.updated', created_at: '2026-11-09T10:00:00.000Z', tenant: 'tnt_1', environment: 'production', data: {fields: ['name'], user: {id: 'usr_1'}}};
 
     it('exposes the verified event and answers 401 otherwise', async () => {
         const mw = verifyWebhookMiddleware([secret, 'whsec_old']);

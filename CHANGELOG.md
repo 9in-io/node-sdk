@@ -7,9 +7,9 @@ ISO 8601 UTC times. Needs the 9in release of 2026-11-10. See [MIGRATION.md](MIGR
 
 * Requires `@9in-io/sdk` 0.2.0 (re-exported types `WebhookEvent`, `AdapterEvent`, `ManagedUser`,
   `ManagedSession`, `NewUser`, `ImportUser` changed with it).
-* Webhook events: `event.event` (was `type`), `event.created_at` (was `createdAt`); `data.userId` is
+* Webhook events: `event.event_type` (was `type`), `event.created_at` (was `createdAt`); `data.userId` is
   gone, use `data.user.id`. `requireAuth().verifier` / `webhookHandler(…, {verifier})` read the new shape.
-* `otpSender()` reads `event.event`; `OtpRequestedData` and the template data are `user_id` and
+* `otpSender()` reads `event.event_type`; `OtpRequestedData` and the template data are `user_id` and
   `expires_at` (were `userId`, `expiresAt`). Update OTP templates that print `expiresAt`.
 * `ManagementClient`: inputs and results use the API's names (`email_verified`, `phone_number`,
   `password_hash`, `next_cursor`, ISO `created_at`); `findUser('phone_number', …)`.

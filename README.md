@@ -123,8 +123,8 @@ import {webhookHandler} from '@9in-io/node';
 
 // Mount before express.json(): the signature covers the raw body.
 app.post('/webhooks/9in', webhookHandler(process.env.NINE_WEBHOOK_SECRET!, async (event) => {
-    // {id, event, created_at, tenant, environment, data}; data.user is the user it is about
-    if (event.event === 'user.created') { /* event.data.user */ }
+    // {id, event_type, created_at, tenant, environment, data}; data.user is the user it is about
+    if (event.event_type === 'user.created') { /* event.data.user */ }
 }));
 ```
 

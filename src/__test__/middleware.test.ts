@@ -107,7 +107,7 @@ describe('adapterMiddleware', () => {
 
 describe('webhookHandler', () => {
     const secret = 'whsec_test';
-    const event = {id: 'evt_1', event: 'user.created', created_at: '2026-11-09T10:00:00.000Z', tenant: 'tnt_1', environment: 'production', data: {user: {id: 'usr_1'}}};
+    const event = {id: 'evt_1', event_type: 'user.created', created_at: '2026-11-09T10:00:00.000Z', tenant: 'tnt_1', environment: 'production', data: {user: {id: 'usr_1'}}};
 
     it('verifies, parses and answers 204', async () => {
         const received: unknown[] = [];

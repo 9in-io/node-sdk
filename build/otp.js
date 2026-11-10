@@ -12,7 +12,7 @@ exports.otpSender = otpSender;
 function otpSender(options) {
     const template = options.template ?? 'otp';
     return async (event) => {
-        if (event.event !== 'otp.requested')
+        if (event.event_type !== 'otp.requested')
             return false;
         const data = event.data;
         const notifier = data.channel === 'sms' ? options.sms : options.email;
