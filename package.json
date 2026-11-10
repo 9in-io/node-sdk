@@ -1,6 +1,6 @@
 {
     "name": "@9in-io/node",
-    "version": "3.1.0",
+    "version": "4.0.0",
     "description": "Official 9in SDK for Node.js, built on @9in-io/sdk: server-side sign-in, Express/Connect middleware for access tokens and webhooks, adapter v2 handler for node:http, and OTP delivery.",
     "keywords": [
         "9in",
@@ -36,7 +36,7 @@
         "node": ">=20.19"
     },
     "dependencies": {
-        "@9in-io/sdk": "^0.1.1",
+        "@9in-io/sdk": "^0.2.0",
         "handlebars": "^4.7.8"
     },
     "devDependencies": {

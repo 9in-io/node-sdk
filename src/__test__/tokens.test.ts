@@ -86,7 +86,7 @@ describe('hybrid mode', () => {
         expect((await call(token)).status).toBe(200); // cached until 9in tells us
 
         const hookUrl = await start(webhookHandler('whsec', () => undefined, {verifier, dedupe: true}));
-        const body = JSON.stringify({id: 'evt_1', type: 'token.revoked', createdAt: '2026-11-09T10:00:00Z', tenant: 'tnt_1', environment: 'production', data: {type: 'access_token', jti: 'jti_live', clientId: 'app_1', userId: 'usr_1'}});
+        const body = JSON.stringify({id: 'evt_1', event: 'token.revoked', created_at: '2026-11-09T10:00:00.000Z', tenant: 'tnt_1', environment: 'production', data: {token_type: 'access_token', jti: 'jti_live', client_id: 'app_1', user: {id: 'usr_1'}}});
         const hook = await fetch(`${hookUrl}/hooks`, {method: 'POST', headers: {'9in-signature': await signPayload('whsec', 'POST', '/hooks', body)}, body});
         expect(hook.status).toBe(204);
 
@@ -101,8 +101,8 @@ describe('hybrid mode', () => {
         const {call} = await api({...options, verifier});
         await call(sign({jti: 'a', sid: 'sid_a'}));
         await call(sign({jti: 'b', sid: 'sid_b', sub: 'usr_2'}));
-        expect(verifier.handleEvent({type: 'session.revoked', data: {sid: 'sid_a', userId: 'usr_1'}})).toBe(1);
-        expect(verifier.handleEvent({type: 'user.password_changed', data: {userId: 'usr_2'}})).toBe(1);
+        expect(verifier.handleEvent({event: 'session.revoked', data: {sid: 'sid_a', user: {id: 'usr_1'}}})).toBe(1);
+        expect(verifier.handleEvent({event: 'user.password_changed', data: {reason: 'reset', user: {id: 'usr_2'}}})).toBe(1);
         expect(tenant.introspected).toHaveLength(2);
     });
 

@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 4.0.0 - 2026-11-10
+
+Breaking: 9in's webhooks, adapter events and Management API are snake_case throughout, with
+ISO 8601 UTC times. Needs the 9in release of 2026-11-10. See [MIGRATION.md](MIGRATION.md#3x--4x).
+
+* Requires `@9in-io/sdk` 0.2.0 (re-exported types `WebhookEvent`, `AdapterEvent`, `ManagedUser`,
+  `ManagedSession`, `NewUser`, `ImportUser` changed with it).
+* Webhook events: `event.event` (was `type`), `event.created_at` (was `createdAt`); `data.userId` is
+  gone, use `data.user.id`. `requireAuth().verifier` / `webhookHandler(…, {verifier})` read the new shape.
+* `otpSender()` reads `event.event`; `OtpRequestedData` and the template data are `user_id` and
+  `expires_at` (were `userId`, `expiresAt`). Update OTP templates that print `expiresAt`.
+* `ManagementClient`: inputs and results use the API's names (`email_verified`, `phone_number`,
+  `password_hash`, `next_cursor`, ISO `created_at`); `findUser('phone_number', …)`.
+
 ## 3.1.0 - 2026-11-09
 
 * `ServerAuth.revoke()` throws `NineError` when 9in refuses the revocation (for example `invalid_client`

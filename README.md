@@ -108,9 +108,13 @@ app.get('/logout', async (req, res) => {
 import {ManagementClient} from '@9in-io/node';
 
 const nine = new ManagementClient({issuer, clientId, clientSecret});   // application with management scopes
-await nine.createUser({email: 'jane@acme.com', password: '…', emailVerified: true});
+await nine.createUser({email: 'jane@acme.com', password: '…', email_verified: true});
 const {url} = await nine.createLoginLink(userId, {returnTo: 'https://app.acme.com/callback'});   // replaces SSOfy auth/token
 ```
+
+Users, sessions and events use 9in's snake_case field names, the same going in and coming
+out (`email_verified`, `phone_number`, `password_hash`), with ISO 8601 UTC times
+(`created_at`, `last_login_at`).
 
 ## Webhooks
 
@@ -119,7 +123,8 @@ import {webhookHandler} from '@9in-io/node';
 
 // Mount before express.json(): the signature covers the raw body.
 app.post('/webhooks/9in', webhookHandler(process.env.NINE_WEBHOOK_SECRET!, async (event) => {
-    if (event.type === 'user.created') { /* event.data.user */ }
+    // {id, event, created_at, tenant, environment, data}; data.user is the user it is about
+    if (event.event === 'user.created') { /* event.data.user */ }
 }));
 ```
 
@@ -152,7 +157,7 @@ app.use('/nine', adapterMiddleware({
         return user ? toAdapterUser(user) : null;
     },
     async onEvent(event) {
-        await sendOtp(event);   // otp.requested → email / SMS (template data: code, purpose, expiresAt, to)
+        await sendOtp(event);   // otp.requested → email / SMS (template data: code, purpose, expires_at, to)
     },
 }));
 ```

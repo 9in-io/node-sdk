@@ -14,15 +14,15 @@ describe('otpSender', () => {
         const email = new RecordingNotifier(Notifications.Channel.EMAIL, 'no-reply@acme.test');
         const sms = new RecordingNotifier(Notifications.Channel.SMS, 'Acme');
         const send = otpSender({email, sms});
-        const data = {userId: '42', channel: 'sms', to: '+447700900000', code: '123456', purpose: 'login', expiresAt: '2026-11-09T10:05:00Z'};
+        const data = {user_id: '42', channel: 'sms', to: '+447700900000', code: '123456', purpose: 'login', expires_at: '2026-11-09T10:05:00.000Z'};
 
-        expect(await send({id: 'e1', type: 'otp.requested', createdAt: '2026-11-09T10:00:00Z', data})).toBe(true);
+        expect(await send({id: 'e1', event: 'otp.requested', created_at: '2026-11-09T10:00:00.000Z', data})).toBe(true);
         expect(sms.sent).toEqual([{receiver: '+447700900000', template: 'otp', data}]);
         expect(email.sent).toEqual([]);
-        expect(await send({id: 'e2', type: 'user.updated', createdAt: '', data: {}})).toBe(false);
+        expect(await send({id: 'e2', event: 'user.updated', created_at: '', data: {}})).toBe(false);
     });
 
     it('fails loudly without a notifier', async () => {
-        await expect(otpSender({})({id: 'e', type: 'otp.requested', createdAt: '', data: {channel: 'email', to: 'x', code: '1'}})).rejects.toThrow('no notifier');
+        await expect(otpSender({})({id: 'e', event: 'otp.requested', created_at: '', data: {channel: 'email', to: 'x', code: '1'}})).rejects.toThrow('no notifier');
     });
 });

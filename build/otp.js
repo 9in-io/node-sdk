@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.otpSender = otpSender;
 /**
  * Adapter `onEvent` helper: delivers `otp.requested` codes with the matching notifier
- * (template data: `code`, `purpose`, `expiresAt`, `userId`, `channel`, `to`). Other events
+ * (template data: `code`, `purpose`, `expires_at`, `user_id`, `channel`, `to`). Other events
  * are ignored; combine with your own handler:
  *
  *   const sendOtp = otpSender({email: new NodemailerEmailNotifier(...), sms: new TwilioSMSNotifier(...)});
@@ -12,7 +12,7 @@ exports.otpSender = otpSender;
 function otpSender(options) {
     const template = options.template ?? 'otp';
     return async (event) => {
-        if (event.type !== 'otp.requested')
+        if (event.event !== 'otp.requested')
             return false;
         const data = event.data;
         const notifier = data.channel === 'sms' ? options.sms : options.email;

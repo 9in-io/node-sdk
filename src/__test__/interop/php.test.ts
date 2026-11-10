@@ -59,7 +59,7 @@ function php(input: Record<string, unknown>): any {
     });
 
     it('PHP-signed webhooks verify with verifyWebhook()', async () => {
-        const body = JSON.stringify({id: 'evt_1', type: 'user.created', createdAt: '2026-11-09T10:00:00Z', tenant: 'tnt_1', environment: 'production', data: {userId: 'usr_1'}});
+        const body = JSON.stringify({id: 'evt_1', event: 'user.created', created_at: '2026-11-09T10:00:00.000Z', tenant: 'tnt_1', environment: 'production', data: {user: {id: 'usr_1'}}});
         const {header} = php({mode: 'sign', secret, method: 'POST', path: '/webhooks/9in', body});
         const event = await verifyWebhook(secret, new Request('https://app.acme.test/webhooks/9in', {method: 'POST', headers: {'9in-signature': header}, body}));
         expect(event.id).toBe('evt_1');
