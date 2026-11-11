@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 4.1.0 - 2026-11-11
+
+`handlebars` is no longer installed with this package. The only dependency is `@9in-io/sdk`.
+
+* `Notifications.HandlebarsEngine` still works, but it uses the `handlebars` package your app
+  installs (an optional peer dependency). Without it, rendering says `npm install handlebars`.
+* Templates without an `engine` fill `{{ data.code }}` placeholders (`Notifications.PlaceholderEngine`,
+  HTML-escaped; `{{{ … }}}` as is). They used to print the view data as JSON, which no message wants.
+* If you use `HandlebarsEngine`, run `npm install handlebars` when you upgrade. See
+  [MIGRATION.md](MIGRATION.md#40--41).
+
 ## 4.0.0 - 2026-11-10
 
 Breaking: 9in's webhooks, adapter events and Management API are snake_case throughout, with

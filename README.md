@@ -140,8 +140,8 @@ a retry that arrives while the first delivery is still running gets `409`.
 import {adapterMiddleware, otpSender, Notifications} from '@9in-io/node';
 
 const sendOtp = otpSender({
-    email: new Notifications.NodemailerEmailNotifier(transporter, Notifications.Channel.EMAIL, 'no-reply@acme.com', [{name: 'otp', channel: Notifications.Channel.EMAIL, path: './otp.email.hbs', engine: new Notifications.HandlebarsEngine()}]),
-    sms: new Notifications.TwilioSMSNotifier(twilio, '+15550000000', [{name: 'otp', channel: Notifications.Channel.SMS, path: './otp.sms.hbs', engine: new Notifications.HandlebarsEngine()}]),
+    email: new Notifications.NodemailerEmailNotifier(transporter, Notifications.Channel.EMAIL, 'no-reply@acme.com', [{name: 'otp', channel: Notifications.Channel.EMAIL, path: './otp.email.html'}]),
+    sms: new Notifications.TwilioSMSNotifier(twilio, '+15550000000', [{name: 'otp', channel: Notifications.Channel.SMS, path: './otp.sms.txt'}]),
 });
 
 // Before express.json(). Set the adapter URL in the console to https://your-app.com/nine
@@ -160,6 +160,17 @@ app.use('/nine', adapterMiddleware({
         await sendOtp(event);   // otp.requested → email / SMS (template data: code, purpose, expires_at, to)
     },
 }));
+```
+
+Templates fill `{{ data.code }}` placeholders (HTML-escaped; `{{{ … }}}` as is) from the event data
+(`code`, `purpose`, `expires_at`, `to`), and `{{ vars.… }}` from the notifier's vars, for example
+`Your Acme code is {{ data.code }}.` For loops, conditions or partials, install `handlebars`
+(it isn't a dependency of this package) and set `engine: new Notifications.HandlebarsEngine()`,
+or pass any engine that has a `render(template, data)` method:
+
+```ts
+// npm install handlebars
+// {name: 'otp', channel: Notifications.Channel.EMAIL, path: './otp.email.hbs', engine: new Notifications.HandlebarsEngine()}
 ```
 
 For a ready-made Express router with these pieces, see

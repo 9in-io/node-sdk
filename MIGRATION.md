@@ -1,5 +1,15 @@
 # Migrating
 
+## 4.0 → 4.1
+
+`handlebars` is no longer installed with `@9in-io/node`.
+
+- If your templates use `engine: new Notifications.HandlebarsEngine()`, add `handlebars` to your
+  app: `npm install handlebars`. Nothing else changes.
+- Templates that only print values don't need Handlebars: without an engine, `{{ data.code }}`,
+  `{{ data.expires_at }}` and `{{ vars.app }}` are filled (HTML-escaped; `{{{ … }}}` as is). Such
+  templates used to render the view data as JSON.
+
 ## 3.x → 4.x
 
 4.0 follows 9in's move to one wire format: snake_case keys everywhere, the same names going in

@@ -1,6 +1,6 @@
 {
     "name": "@9in-io/node",
-    "version": "4.0.0",
+    "version": "4.1.0",
     "description": "Official 9in SDK for Node.js, built on @9in-io/sdk: server-side sign-in, Express/Connect middleware for access tokens and webhooks, adapter v2 handler for node:http, and OTP delivery.",
     "keywords": [
         "9in",
@@ -36,8 +36,15 @@
         "node": ">=20.19"
     },
     "dependencies": {
-        "@9in-io/sdk": "^0.2.0",
+        "@9in-io/sdk": "^0.2.0"
+    },
+    "peerDependencies": {
         "handlebars": "^4.7.8"
+    },
+    "peerDependenciesMeta": {
+        "handlebars": {
+            "optional": true
+        }
     },
     "devDependencies": {
         "@mailchimp/mailchimp_transactional": "^1.0.50",
@@ -48,6 +55,7 @@
         "@types/nodemailer": "^6.4.9",
         "@vonage/server-sdk": "^3.9.1",
         "aws-sdk": "^2.1445.0",
+        "handlebars": "^4.7.10",
         "jest": "^29.7.0",
         "mailgun.js": "^9.2.1",
         "nodemailer": "^6.9.4",

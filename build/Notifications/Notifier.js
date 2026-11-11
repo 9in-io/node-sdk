@@ -36,6 +36,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Notifier = void 0;
 const Errors_1 = require("../Errors");
 const fs = __importStar(require("fs/promises"));
+const PlaceholderEngine_1 = require("./PlaceholderEngine");
+const DEFAULT_ENGINE = new PlaceholderEngine_1.PlaceholderEngine();
 class Notifier {
     channel;
     sender;
@@ -59,10 +61,8 @@ class Notifier {
             vars: this.vars,
             data: data,
         };
-        if (!tpl.engine) {
-            return JSON.stringify(viewData);
-        }
-        return await tpl.engine.render(templateContent.trim(), viewData);
+        // Without an engine, `{{ data.code }}` placeholders are filled (PlaceholderEngine).
+        return await (tpl.engine ?? DEFAULT_ENGINE).render(templateContent.trim(), viewData);
     }
     setTemplate(template) {
         if (Array.isArray(template)) {

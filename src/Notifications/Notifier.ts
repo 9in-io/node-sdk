@@ -1,6 +1,9 @@
 import {Notifications} from ".";
 import {TemplateNotFoundError} from "../Errors";
 import * as fs from 'fs/promises';
+import {PlaceholderEngine} from "./PlaceholderEngine";
+
+const DEFAULT_ENGINE = new PlaceholderEngine();
 
 export abstract class Notifier {
     protected channel: Notifications.Channel;
@@ -39,11 +42,8 @@ export abstract class Notifier {
             data: data,
         };
 
-        if (!tpl.engine) {
-            return JSON.stringify(viewData);
-        }
-
-        return await tpl.engine.render(templateContent.trim(), viewData);
+        // Without an engine, `{{ data.code }}` placeholders are filled (PlaceholderEngine).
+        return await (tpl.engine ?? DEFAULT_ENGINE).render(templateContent.trim(), viewData);
     }
 
     setTemplate(template: Notifications.Template | Notifications.Template[]): void {

@@ -3,6 +3,7 @@ import * as ConsoleNotifierInternal from "./ConsoleNotifier";
 import * as TemplateInternal from "./Template";
 import * as MessageTypeInternal from "./Channel";
 import * as TemplateEngineInternal from "./TemplateEngine";
+import * as PlaceholderEngineInternal from "./PlaceholderEngine";
 import * as HandlebarsEngineInternal from "./HandlebarsEngine";
 import * as TwilioSMSNotifierInternal from "./TwilioSMSNotifier";
 import * as VonageSMSNotifierInternal from "./VonageSMSNotifier";
@@ -18,6 +19,7 @@ export namespace Notifications {
     export import Notifier = NotifierInternal.Notifier;
     export import ConsoleNotifier = ConsoleNotifierInternal.ConsoleNotifier;
     export import TemplateEngine = TemplateEngineInternal.TemplateEngine;
+    export import PlaceholderEngine = PlaceholderEngineInternal.PlaceholderEngine;
     export import HandlebarsEngine = HandlebarsEngineInternal.HandlebarsEngine;
     export import TwilioSMSNotifier = TwilioSMSNotifierInternal.TwilioSMSNotifier;
     export import VonageSMSNotifier = VonageSMSNotifierInternal.VonageSMSNotifier;
