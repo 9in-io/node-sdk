@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 4.1.1 - 2026-11-11
+
+* Accepts `@9in-io/sdk` 0.3 as well as 0.2. With 4.1.0, an app that also installed `@9in-io/sdk`
+  0.3.0 (for example with `@9in-io/nextjs`) got a second copy of the SDK inside this package, and
+  `instanceof NineError` failed for errors thrown here.
+
 ## 4.1.0 - 2026-11-11
 
 `handlebars` is no longer installed with this package. The only dependency is `@9in-io/sdk`.
