@@ -1,12 +1,18 @@
 import {Notifications} from ".";
 import {Notifier} from "./Notifier";
-import type nodemailer from "nodemailer";
+/**
+ * The part of a Nodemailer transporter (`nodemailer.createTransport(...)`) the notifier uses. Any
+ * Nodemailer version fits; this package doesn't depend on Nodemailer or its types.
+ */
+export interface MailTransporter {
+    sendMail(options: {to: string; from: string; subject: string; html: string}): Promise<{messageId?: string}>;
+}
 
 export class NodemailerEmailNotifier extends Notifier {
-    private client: nodemailer.Transporter;
+    private client: MailTransporter;
 
     constructor(
-        transporter: nodemailer.Transporter,
+        transporter: MailTransporter,
         channel: Notifications.Channel,
         sender: string,
         templates: Notifications.Template[] = [],

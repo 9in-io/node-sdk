@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 4.1.2 - 2026-11-12
+
+* The notifiers no longer refer to the provider SDKs' types (Nodemailer, AWS SDK, Twilio, Vonage,
+  SendGrid, Mailgun). Each constructor takes a small interface for the one method it calls
+  (`MailTransporter`, `SESClient`, `TwilioClient`, `VonageClient`, `SendGridClient`,
+  `MailgunClient`), which that SDK's client fits in any version. Apps that type-check libraries
+  (`skipLibCheck: false`) no longer need every provider's types installed.
+* `SendGridEmailNotifier` logged a sent email as an error and a failure as debug output; it's the
+  other way round now.
+* The provider SDKs are no longer development dependencies of this repository (they were only used
+  for types), which also clears GitHub's security alerts about their old versions. Nothing changes
+  for apps: they never installed them through this package.
+
 ## 4.1.1 - 2026-11-11
 
 * Accepts `@9in-io/sdk` 0.3 as well as 0.2. With 4.1.0, an app that also installed `@9in-io/sdk`

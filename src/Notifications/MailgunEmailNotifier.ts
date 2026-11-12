@@ -1,13 +1,19 @@
 import {Notifications} from ".";
 import {Notifier} from "./Notifier";
-import type {Interfaces} from 'mailgun.js';
+/**
+ * The part of a Mailgun client (`new Mailgun(FormData).client(...)` from mailgun.js) the notifier
+ * uses. This package doesn't depend on mailgun.js or its types.
+ */
+export interface MailgunClient {
+    messages: {create(domain: string, data: {from: string; to: string; subject: string; html: string}): Promise<unknown>};
+}
 
 export class MailgunEmailNotifier extends Notifier {
-    protected client: Interfaces.IMailgunClient;
+    protected client: MailgunClient;
     protected domain: string;
 
     constructor(
-        mailgun: Interfaces.IMailgunClient,
+        mailgun: MailgunClient,
         domain: string,
         sender: string,
         templates: Notifications.Template[] = [],

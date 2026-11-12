@@ -18,11 +18,11 @@ class SendGridEmailNotifier extends Notifier_1.Notifier {
             html: messageContent,
         };
         try {
-            const response = await this.client.send(msg);
-            console.error('Email sent successfully using SendGrid');
+            await this.client.send(msg);
+            console.debug('Email sent successfully using SendGrid');
         }
         catch (error) {
-            console.debug('Error sending email using SendGrid:', error);
+            console.error('Error sending email using SendGrid:', error);
         }
     }
 }

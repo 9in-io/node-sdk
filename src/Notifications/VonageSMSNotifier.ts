@@ -1,12 +1,18 @@
 import {Notifications} from ".";
 import {Notifier} from "./Notifier";
-import type {Vonage} from "@vonage/server-sdk";
+/**
+ * The part of a Vonage client (`new Vonage(...)` from @vonage/server-sdk) the notifier uses. This
+ * package doesn't depend on the Vonage SDK or its types.
+ */
+export interface VonageClient {
+    sms: {send(params: {from: string; to: string; text: string}): Promise<unknown>};
+}
 
 export class VonageSMSNotifier extends Notifier {
-    private client: Vonage;
+    private client: VonageClient;
 
     constructor(
-        vonage: Vonage,
+        vonage: VonageClient,
         channel: Notifications.Channel,
         sender: string,
         templates: Notifications.Template[] = [],

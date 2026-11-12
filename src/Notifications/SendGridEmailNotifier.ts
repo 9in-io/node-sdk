@@ -1,12 +1,18 @@
 import {Notifications} from ".";
 import {Notifier} from "./Notifier";
-import type sgMail from '@sendgrid/mail';
+/**
+ * The part of SendGrid's mail client (the default export of @sendgrid/mail) the notifier uses. This
+ * package doesn't depend on the SendGrid SDK or its types.
+ */
+export interface SendGridClient {
+    send(message: {to: string; from: string; subject: string; html: string}): Promise<unknown>;
+}
 
 export class SendGridEmailNotifier extends Notifier {
-    private client: typeof sgMail;
+    private client: SendGridClient;
 
     constructor(
-        sgMailInstance: typeof sgMail,
+        sgMailInstance: SendGridClient,
         sender: string,
         templates: Notifications.Template[] = [],
         vars: any = {}
@@ -26,14 +32,10 @@ export class SendGridEmailNotifier extends Notifier {
         };
 
         try {
-            const response = await this.client.send(msg);
-            console.error('Email sent successfully using SendGrid');
+            await this.client.send(msg);
+            console.debug('Email sent successfully using SendGrid');
         } catch (error) {
-            console.debug('Error sending email using SendGrid:', error);
+            console.error('Error sending email using SendGrid:', error);
         }
     }
 }
-
-
-
-

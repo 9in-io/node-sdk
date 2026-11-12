@@ -1,12 +1,18 @@
 import {Notifications} from ".";
 import {Notifier} from "./Notifier";
-import type {Twilio} from "twilio";
+/**
+ * The part of a Twilio client (`twilio(accountSid, authToken)`) the notifier uses. This package
+ * doesn't depend on the Twilio SDK or its types.
+ */
+export interface TwilioClient {
+    messages: {create(options: {body: string; from: string; to: string}): Promise<{sid: string}>};
+}
 
 export class TwilioSMSNotifier extends Notifier {
-    private client: Twilio;
+    private client: TwilioClient;
 
     constructor(
-        twilio: Twilio,
+        twilio: TwilioClient,
         sender: string,
         templates: Notifications.Template[] = [],
         vars: any = {}
