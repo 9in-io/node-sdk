@@ -9,12 +9,12 @@ import {verifyIdToken} from './id-token';
  *
  *   const auth = new ServerAuth({issuer, clientId, clientSecret, redirectUri});
  *
- *   // GET /login
+ *   // GET /nine/login
  *   const {url, pending} = await auth.createLogin({returnTo: '/dashboard'});
  *   req.session.nineLogin = pending;
  *   res.redirect(url);
  *
- *   // GET /callback
+ *   // GET /nine/callback
  *   const tokens = await auth.handleCallback(req.originalUrl, req.session.nineLogin);
  *   req.session.nineLogin = undefined;
  *   req.session.tokens = tokens;

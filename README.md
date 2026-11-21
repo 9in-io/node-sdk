@@ -55,7 +55,7 @@ Missing, expired or foreign tokens get `401` with `WWW-Authenticate`. Pass
   ```ts
   const auth = requireAuth({issuer, audience, clientId, clientSecret});   // mode: 'hybrid' (the default with credentials)
   app.get('/api/orders', auth, handler);
-  app.post('/webhooks/9in', webhookHandler(process.env.NINE_WEBHOOK_SECRET!, onEvent, {verifier: auth.verifier, dedupe: true}));
+  app.post('/nine/webhook', webhookHandler(process.env.NINE_WEBHOOK_SECRET!, onEvent, {verifier: auth.verifier, dedupe: true}));
   ```
 
   - **Hybrid mode:** each token is checked locally and introspected once. The answer is
@@ -76,16 +76,16 @@ const auth = new ServerAuth({
     issuer: process.env.NINE_ISSUER!,
     clientId: process.env.NINE_CLIENT_ID!,
     clientSecret: process.env.NINE_CLIENT_SECRET,
-    redirectUri: 'https://app.acme.com/callback',
+    redirectUri: 'https://app.acme.com/nine/callback',
 });
 
-app.get('/login', async (req, res) => {
-    const {url, pending} = await auth.createLogin({returnTo: req.query.returnTo as string});   // screen: 'signup' for registration
+app.get('/nine/login', async (req, res) => {
+    const {url, pending} = await auth.createLogin({returnTo: req.query.return_to as string});   // screen: 'signup' for registration
     req.session.nineLogin = pending;
     res.redirect(url);
 });
 
-app.get('/callback', async (req, res) => {
+app.get('/nine/callback', async (req, res) => {
     const tokens = await auth.handleCallback(req.originalUrl, req.session.nineLogin);   // checks state, iss, PKCE, ID token (any asymmetric key)
     req.session.nineLogin = undefined;
     req.session.tokens = tokens;
@@ -94,7 +94,7 @@ app.get('/callback', async (req, res) => {
 });
 
 // later: tokens = await auth.ensureFresh(req.session.tokens)  (refresh tokens rotate)
-app.get('/logout', async (req, res) => {
+app.get('/nine/logout', async (req, res) => {
     const tokens = req.session.tokens;
     if (tokens?.refreshToken) await auth.revoke(tokens.refreshToken);
     req.session.destroy(() => undefined);
@@ -109,7 +109,7 @@ import {ManagementClient} from '@9in-io/node';
 
 const nine = new ManagementClient({issuer, clientId, clientSecret});   // application with management scopes
 await nine.createUser({email: 'jane@acme.com', password: '…', email_verified: true});
-const {url} = await nine.createLoginLink(userId, {returnTo: 'https://app.acme.com/callback'});   // replaces SSOfy auth/token
+const {url} = await nine.createLoginLink(userId, {returnTo: 'https://app.acme.com/nine/callback'});   // replaces SSOfy auth/token
 ```
 
 Users, sessions and events use 9in's snake_case field names, the same going in and coming
@@ -122,7 +122,7 @@ out (`email_verified`, `phone_number`, `password_hash`), with ISO 8601 UTC times
 import {webhookHandler} from '@9in-io/node';
 
 // Mount before express.json(): the signature covers the raw body.
-app.post('/webhooks/9in', webhookHandler(process.env.NINE_WEBHOOK_SECRET!, async (event) => {
+app.post('/nine/webhook', webhookHandler(process.env.NINE_WEBHOOK_SECRET!, async (event) => {
     // {id, event_type, created_at, tenant, environment, data}; data.user is the user it is about
     if (event.event_type === 'user.created') { /* event.data.user */ }
 }));

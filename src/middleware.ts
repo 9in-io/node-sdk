@@ -56,7 +56,7 @@ function json(res: ServerResponse, status: number, body: unknown, headers: Recor
  *
  *   const auth = requireAuth({issuer, audience: 'https://api.acme.com', clientId, clientSecret});  // hybrid
  *   app.get('/api/orders', auth, handler);
- *   app.post('/webhooks/9in', webhookHandler(secret, onEvent, {verifier: auth.verifier}));   // revocations evict
+ *   app.post('/nine/webhook', webhookHandler(secret, onEvent, {verifier: auth.verifier}));   // revocations evict
  *
  * In hybrid mode a revoked token is refused as soon as the `token.revoked` /
  * `session.revoked` / user webhook reaches `webhookHandler` (or after `cacheTtl`).
@@ -147,7 +147,7 @@ export function verifyWebhookMiddleware(secret: string | string[], options: Webh
  * Complete webhook endpoint: verifies, calls `onEvent`, answers 204 (or 500 when
  * `onEvent` throws, so 9in retries). With `dedupe`, `onEvent` runs once per event id.
  *
- *   app.post('/webhooks/9in', webhookHandler(process.env.NINE_WEBHOOK_SECRET!, async (event) => { … }, {dedupe: true}))
+ *   app.post('/nine/webhook', webhookHandler(process.env.NINE_WEBHOOK_SECRET!, async (event) => { … }, {dedupe: true}))
  */
 export function webhookHandler(secret: string | string[], onEvent: (event: WebhookEvent) => unknown, options: WebhookHandlerOptions = {}) {
     const verify = verifyWebhookMiddleware(secret, options);
