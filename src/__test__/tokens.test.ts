@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, it} from '@jest/globals';
 import type {IncomingMessage, ServerResponse} from 'node:http';
-import {createTokenVerifier, requireAuth, signPayload, webhookHandler, type AuthenticatedRequest, type RequireAuthOptions} from '../index';
+import {MemoryEventStore, createTokenVerifier, requireAuth, signPayload, webhookHandler, type AuthenticatedRequest, type RequireAuthOptions} from '../index';
 import {fakeTenant, serve} from './helpers';
 
 const servers: {close: () => Promise<void>}[] = [];
@@ -95,14 +95,54 @@ describe('hybrid mode', () => {
         expect(tenant.introspected).toHaveLength(2); // the refusal is remembered
     });
 
+    async function revokeVia(verifier: import('../index').TokenVerifier, dedupe: MemoryEventStore | boolean, jti: string) {
+        const hookUrl = await start(webhookHandler('whsec', () => undefined, {verifier, dedupe}));
+        const body = JSON.stringify({id: `evt_${jti}`, event_type: 'token.revoked', created_at: '2026-11-22T10:00:00.000Z', tenant: 'tnt_1', environment: 'production', data: {token_type: 'access_token', jti, client_id: 'app_1', user: {id: 'usr_1'}}});
+        return fetch(`${hookUrl}/hooks`, {method: 'POST', headers: {'9in-signature': await signPayload('whsec', 'POST', '/hooks', body)}, body});
+    }
+
+    it('with a shared store, a webhook received by one process reaches the others', async () => {
+        const {tenant, sign, revoked, options} = setup();
+        const store = new MemoryEventStore();
+        const processA = await api({...options, store});
+        const processB = await api({...options, store});
+        const token = sign({jti: 'jti_shared'});
+        expect((await processA.call(token)).status).toBe(200);
+        expect((await processB.call(token)).status).toBe(200);
+        expect(tenant.introspected).toHaveLength(1); // one answer for both processes
+
+        revoked.add(token);
+        expect((await processA.call(token)).status).toBe(200); // cached until 9in tells us
+        expect((await revokeVia(processB.verifier, store, 'jti_shared')).status).toBe(204);
+        expect((await processA.call(token)).status).toBe(401);
+    });
+
+    it('answers 500 when a revocation can\'t be stored, so 9in retries', async () => {
+        const {options} = setup();
+        class Broken extends MemoryEventStore {
+            override async set(key: string, value: string, ttl: number) {
+                if (key.startsWith('9in:hybrid:')) throw new Error('redis down');
+                return super.set(key, value, ttl);
+            }
+        }
+        const store = new Broken();
+        const {verifier} = await api({...options, store});
+        let called = false;
+        const hookUrl = await start(webhookHandler('whsec', () => void (called = true), {verifier, dedupe: store}));
+        const body = JSON.stringify({id: 'evt_x', event_type: 'session.revoked', created_at: '2026-11-22T10:00:00.000Z', tenant: 'tnt_1', environment: 'production', data: {sid: 'sid_1', user: {id: 'usr_1'}}});
+        const hook = await fetch(`${hookUrl}/hooks`, {method: 'POST', headers: {'9in-signature': await signPayload('whsec', 'POST', '/hooks', body)}, body});
+        expect(hook.status).toBe(500);
+        expect(called).toBe(false);
+    });
+
     it('evicts by session and by user', async () => {
         const {tenant, sign, options} = setup();
         const verifier = createTokenVerifier(options);
         const {call} = await api({...options, verifier});
         await call(sign({jti: 'a', sid: 'sid_a'}));
         await call(sign({jti: 'b', sid: 'sid_b', sub: 'usr_2'}));
-        expect(verifier.handleEvent({event_type: 'session.revoked', data: {sid: 'sid_a', user: {id: 'usr_1'}}})).toBe(1);
-        expect(verifier.handleEvent({event_type: 'user.password_changed', data: {reason: 'reset', user: {id: 'usr_2'}}})).toBe(1);
+        expect(await verifier.handleEvent({event_type: 'session.revoked', data: {sid: 'sid_a', user: {id: 'usr_1'}}})).toBe(1);
+        expect(await verifier.handleEvent({event_type: 'user.password_changed', data: {reason: 'reset', user: {id: 'usr_2'}}})).toBe(1);
         expect(tenant.introspected).toHaveLength(2);
     });
 

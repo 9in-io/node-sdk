@@ -64,6 +64,10 @@ Missing, expired or foreign tokens get `401` with `WWW-Authenticate`. Pass
   - **Other modes:** `mode: 'local'` (the default without credentials) skips
     introspection; `'introspect'` asks 9in on every request.
   - **Opaque tokens:** `9in_at_…` tokens are introspected.
+  - **Several processes:** pass `store` (with `@9in-io/sdk` 0.4+), a store every process
+    shares, such as Redis: the process that receives the webhook writes a revocation marker
+    that every process checks, so the revocation reaches them all. The same store can be the
+    `dedupe` store. See [shared store](https://github.com/9in-io/sdk#several-instances-a-shared-store).
   - **Errors:** introspection failures go to `next(error)` (a 500), not 401.
 
 ## Sign users in (server-rendered apps)

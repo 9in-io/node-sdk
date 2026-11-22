@@ -110,6 +110,7 @@ export interface WebhookHandlerOptions extends WebhookOptions {
     /**
      * Token verifiers to keep current: `handleEvent` is called with every verified event,
      * so token.revoked / session.revoked / user.* evict cached answers (e.g. `auth.verifier`).
+     * When a verifier's shared `store` can't be written, the delivery gets a 500 (9in retries).
      */
     verifier?: TokenVerifier | TokenVerifier[];
 }
@@ -158,8 +159,9 @@ export function webhookHandler(secret: string | string[], onEvent: (event: Webho
             if (error) return next ? next(error) : json(res, 500, {error: 'server_error'});
             try {
                 const event = req.nineEvent!;
-                // Evict first, also for duplicates and before onEvent can fail.
-                for (const verifier of verifiers) verifier.handleEvent(event);
+                // Evict first, also for duplicates and before onEvent can fail. With a shared store
+                // this writes revocation markers; if that fails the delivery gets a 500 and 9in retries.
+                for (const verifier of verifiers) await verifier.handleEvent(event);
                 if (store) {
                     const outcome = await processEventOnce(store, event.id, () => onEvent(event), {ttlSeconds: options.dedupeTtlSeconds, prefix: '9in:webhook:'});
                     if (outcome.status === 'in_progress') return json(res, 409, {error: 'in_progress'});

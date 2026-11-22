@@ -98,9 +98,10 @@ function webhookHandler(secret, onEvent, options = {}) {
             return next ? next(error) : json(res, 500, { error: 'server_error' });
         try {
             const event = req.nineEvent;
-            // Evict first, also for duplicates and before onEvent can fail.
+            // Evict first, also for duplicates and before onEvent can fail. With a shared store
+            // this writes revocation markers; if that fails the delivery gets a 500 and 9in retries.
             for (const verifier of verifiers)
-                verifier.handleEvent(event);
+                await verifier.handleEvent(event);
             if (store) {
                 const outcome = await (0, server_1.processEventOnce)(store, event.id, () => onEvent(event), { ttlSeconds: options.dedupeTtlSeconds, prefix: '9in:webhook:' });
                 if (outcome.status === 'in_progress')

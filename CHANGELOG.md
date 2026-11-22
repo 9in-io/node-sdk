@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 4.2.0 - 2026-11-22
+
+* Works with `@9in-io/sdk` 0.4. Its `createTokenVerifier` takes a shared `store`, which
+  `requireAuth({store})` passes through: with Redis (or any store every process shares), a
+  revocation webhook received by one process reaches all of them.
+* `webhookHandler(…, {verifier})` waits for each verifier's `handleEvent`, and answers 500 when it
+  fails (a shared store that can't be written), so 9in delivers the event again.
+
 ## 4.1.2 - 2026-11-12
 
 * The notifiers no longer refer to the provider SDKs' types (Nodemailer, AWS SDK, Twilio, Vonage,

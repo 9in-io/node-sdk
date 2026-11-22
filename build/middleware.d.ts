@@ -57,6 +57,7 @@ export interface WebhookHandlerOptions extends WebhookOptions {
     /**
      * Token verifiers to keep current: `handleEvent` is called with every verified event,
      * so token.revoked / session.revoked / user.* evict cached answers (e.g. `auth.verifier`).
+     * When a verifier's shared `store` can't be written, the delivery gets a 500 (9in retries).
      */
     verifier?: TokenVerifier | TokenVerifier[];
 }
