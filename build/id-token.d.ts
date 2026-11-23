@@ -1,4 +1,3 @@
-import { type JsonWebKey } from 'node:crypto';
 /**
  * ID token verification for server-side sign-in. `verifyAccessToken` only accepts access
  * tokens (`typ: at+jwt`), so ID tokens are checked here with node:crypto: every asymmetric
@@ -13,9 +12,17 @@ export interface VerifyIdTokenOptions {
     allowInsecureIssuer?: boolean;
     fetch?: typeof fetch;
 }
-interface Jwk extends JsonWebKey {
+/**
+ * A key from the tenant's JWKS: the members read here, and the rest as they come. Its own type,
+ * not one from @types/node, which renamed its JWK types between versions (this type is in the
+ * published .d.ts, so it has to compile against all of them).
+ */
+interface Jwk {
+    kty?: string;
+    crv?: string;
     kid?: string;
     alg?: string;
+    [member: string]: unknown;
 }
 export declare function verifySignatureWithJwk(alg: string, jwk: Jwk, input: string, signature: Buffer): boolean;
 export declare function verifyIdToken(idToken: string, options: VerifyIdTokenOptions): Promise<Record<string, unknown>>;

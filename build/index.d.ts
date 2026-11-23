@@ -4,8 +4,14 @@
  * Everything from `@9in-io/sdk/server` (verifyAccessToken, ManagementClient, adapterHandler,
  * verifyWebhook, verifySignature, signPayload, NineError and the types) is re-exported,
  * plus Node-specific helpers.
+ *
+ * The values are listed by name, not with `export *`: this package is CommonJS and
+ * `@9in-io/sdk` is an ES module, so Node can't see names re-exported with `export *` when an
+ * ES module imports this one (`import {ManagementClient} from '@9in-io/node'` would fail).
+ * scripts/check-esm-exports.mjs checks that every export is importable by name.
  */
-export * from '@9in-io/sdk/server';
+export { ManagementClient, MemoryEventStore, NineError, WebAppAuth, adapterHandler, createTokenVerifier, normalizeIssuer, processEventOnce, signPayload, verifyAccessToken, verifySignature, verifyWebhook, } from '@9in-io/sdk/server';
+export type * from '@9in-io/sdk/server';
 export { env, envSource, configFromEnv } from './env';
 export { readRawBody, toRequest, sendResponse, toNodeHandler } from './node-http';
 export type { NodeRequest, NextFunction, FetchHandler } from './node-http';

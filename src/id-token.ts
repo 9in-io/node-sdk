@@ -1,4 +1,4 @@
-import {createPublicKey, verify as cryptoVerify, type JsonWebKey, type KeyObject} from 'node:crypto';
+import {createPublicKey, verify as cryptoVerify, type JsonWebKeyInput, type KeyObject} from 'node:crypto';
 import {NineError, normalizeIssuer} from '@9in-io/sdk/server';
 
 /**
@@ -17,9 +17,17 @@ export interface VerifyIdTokenOptions {
     fetch?: typeof fetch;
 }
 
-interface Jwk extends JsonWebKey {
+/**
+ * A key from the tenant's JWKS: the members read here, and the rest as they come. Its own type,
+ * not one from @types/node, which renamed its JWK types between versions (this type is in the
+ * published .d.ts, so it has to compile against all of them).
+ */
+interface Jwk {
+    kty?: string;
+    crv?: string;
     kid?: string;
     alg?: string;
+    [member: string]: unknown;
 }
 
 const HASH: Record<string, string> = {RS256: 'sha256', RS384: 'sha384', RS512: 'sha512', PS256: 'sha256', PS384: 'sha384', PS512: 'sha512', ES256: 'sha256', ES384: 'sha384'};
@@ -55,7 +63,7 @@ function part(token: string, index: number): Record<string, unknown> {
 }
 
 export function verifySignatureWithJwk(alg: string, jwk: Jwk, input: string, signature: Buffer): boolean {
-    const key: KeyObject = createPublicKey({key: jwk, format: 'jwk'});
+    const key: KeyObject = createPublicKey({key: jwk as unknown as JsonWebKeyInput['key'], format: 'jwk'});
     if (alg === 'EdDSA') return cryptoVerify(null, Buffer.from(input), key, signature);
     const hash = HASH[alg];
     if (!hash) return false;

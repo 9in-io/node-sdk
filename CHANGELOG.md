@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 5.0.1 - 2026-11-23
+
+* ES modules can import everything by name. `import {ManagementClient, createTokenVerifier} from
+  '@9in-io/node'` failed with "Named export not found" for the twelve names that come from
+  `@9in-io/sdk/server` (an ES module, which Node can't see through `export *` from this CommonJS
+  package). They are now listed by name, and CI checks that every export can be imported.
+* The type declarations compile with `@types/node` 25 and later, which no longer export
+  `JsonWebKey` from `node:crypto` (projects without `skipLibCheck` got a type error).
+
 ## 5.0.0 - 2026-11-23
 
 * `redisStore(client)` and `dynamoStore({client, table})`: shared stores for hybrid verification
