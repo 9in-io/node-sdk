@@ -1,35 +1,20 @@
-/**
- * 9in settings from the environment: `NINE_<NAME>` first, then the SSOfy names that are
- * still accepted as fallbacks while you migrate.
- */
-export const LEGACY_ENV: Readonly<Record<string, readonly string[]>> = {
-    NINE_ISSUER: ['SSOFY_ISSUER', 'SSOFY_URL'],
-    NINE_CLIENT_ID: ['SSOFY_CLIENT_ID'],
-    NINE_CLIENT_SECRET: ['SSOFY_CLIENT_SECRET'],
-    NINE_REDIRECT_URI: ['SSOFY_REDIRECT_URI'],
-    NINE_ADAPTER_SECRET: ['SSOFY_ADAPTER_SECRET', 'SSOFY_API_SECRET'],
-    NINE_WEBHOOK_SECRET: ['SSOFY_WEBHOOK_SECRET'],
-};
+/** 9in settings from the environment: `NINE_<NAME>`. */
 
 type Environment = Record<string, string | undefined>;
 
-function names(name: string): string[] {
-    const nine = name.startsWith('NINE_') ? name : `NINE_${name}`;
-    return [nine, ...(LEGACY_ENV[nine] ?? [`SSOFY_${nine.slice(5)}`])];
+function nineName(name: string): string {
+    return name.startsWith('NINE_') ? name : `NINE_${name}`;
 }
 
-/** `env("ISSUER")` reads NINE_ISSUER, then SSOFY_ISSUER / SSOFY_URL. */
+/** `env("ISSUER")` reads NINE_ISSUER. */
 export function env(name: string, environment: Environment = process.env): string | undefined {
-    for (const candidate of names(name)) {
-        const value = environment[candidate];
-        if (value !== undefined && value !== '') return value;
-    }
-    return undefined;
+    const value = environment[nineName(name)];
+    return value === undefined || value === '' ? undefined : value;
 }
 
-/** Which variable a setting was read from (for deprecation warnings). */
+/** The variable a setting is read from (`NINE_ISSUER` for "ISSUER") when it is set. */
 export function envSource(name: string, environment: Environment = process.env): string | undefined {
-    return names(name).find((candidate) => environment[candidate] !== undefined && environment[candidate] !== '');
+    return env(name, environment) === undefined ? undefined : nineName(name);
 }
 
 /** Settings shared by ServerAuth, ManagementClient and the middleware. */

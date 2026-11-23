@@ -22,6 +22,13 @@ jobs:
       matrix:
         node: [20, 22, 24]
 
+    # A real Redis for redisStore's tests (dynamoStore's run against dynalite, in process).
+    services:
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+        options: --health-cmd "redis-cli ping" --health-interval 2s --health-timeout 2s --health-retries 15
+
     steps:
       - uses: actions/checkout@v7
 
@@ -55,3 +62,4 @@ jobs:
         run: npm test
         env:
           NINE_PHP_SDK_PATH: ${{ github.workspace }}/.php-sdk
+          NINE_TEST_REDIS_URL: redis://127.0.0.1:6379/15

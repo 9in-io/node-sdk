@@ -6,7 +6,7 @@
  * plus Node-specific helpers.
  */
 export * from '@9in-io/sdk/server';
-export { env, envSource, configFromEnv, LEGACY_ENV } from './env';
+export { env, envSource, configFromEnv } from './env';
 export { readRawBody, toRequest, sendResponse, toNodeHandler } from './node-http';
 export type { NodeRequest, NextFunction, FetchHandler } from './node-http';
 export { requireAuth, verifyWebhookMiddleware, webhookHandler, adapterMiddleware } from './middleware';
@@ -17,6 +17,8 @@ export { ServerAuth, codeChallenge } from './server-auth';
 export type { ServerAuthOptions, ServerLoginOptions, PendingLogin, ServerTokenSet } from './server-auth';
 export { otpSender } from './otp';
 export type { OtpRequestedData, OtpSenderOptions } from './otp';
+export { redisStore, dynamoStore } from './stores';
+export type { RedisLikeClient, RedisStoreOptions, DynamoDocumentClient, DynamoStoreOptions } from './stores';
 export * from './Notifications';
 export * from './Events';
 export { BaseError } from './Errors/BaseError';

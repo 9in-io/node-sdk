@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TemplateNotFoundError = exports.BaseError = exports.otpSender = exports.codeChallenge = exports.ServerAuth = exports.verifyIdToken = exports.adapterMiddleware = exports.webhookHandler = exports.verifyWebhookMiddleware = exports.requireAuth = exports.toNodeHandler = exports.sendResponse = exports.toRequest = exports.readRawBody = exports.LEGACY_ENV = exports.configFromEnv = exports.envSource = exports.env = void 0;
+exports.TemplateNotFoundError = exports.BaseError = exports.dynamoStore = exports.redisStore = exports.otpSender = exports.codeChallenge = exports.ServerAuth = exports.verifyIdToken = exports.adapterMiddleware = exports.webhookHandler = exports.verifyWebhookMiddleware = exports.requireAuth = exports.toNodeHandler = exports.sendResponse = exports.toRequest = exports.readRawBody = exports.configFromEnv = exports.envSource = exports.env = void 0;
 /**
  * @9in-io/node: the 9in SDK for Node.js.
  *
@@ -27,7 +27,6 @@ var env_1 = require("./env");
 Object.defineProperty(exports, "env", { enumerable: true, get: function () { return env_1.env; } });
 Object.defineProperty(exports, "envSource", { enumerable: true, get: function () { return env_1.envSource; } });
 Object.defineProperty(exports, "configFromEnv", { enumerable: true, get: function () { return env_1.configFromEnv; } });
-Object.defineProperty(exports, "LEGACY_ENV", { enumerable: true, get: function () { return env_1.LEGACY_ENV; } });
 var node_http_1 = require("./node-http");
 Object.defineProperty(exports, "readRawBody", { enumerable: true, get: function () { return node_http_1.readRawBody; } });
 Object.defineProperty(exports, "toRequest", { enumerable: true, get: function () { return node_http_1.toRequest; } });
@@ -45,6 +44,9 @@ Object.defineProperty(exports, "ServerAuth", { enumerable: true, get: function (
 Object.defineProperty(exports, "codeChallenge", { enumerable: true, get: function () { return server_auth_1.codeChallenge; } });
 var otp_1 = require("./otp");
 Object.defineProperty(exports, "otpSender", { enumerable: true, get: function () { return otp_1.otpSender; } });
+var stores_1 = require("./stores");
+Object.defineProperty(exports, "redisStore", { enumerable: true, get: function () { return stores_1.redisStore; } });
+Object.defineProperty(exports, "dynamoStore", { enumerable: true, get: function () { return stores_1.dynamoStore; } });
 __exportStar(require("./Notifications"), exports);
 __exportStar(require("./Events"), exports);
 var BaseError_1 = require("./Errors/BaseError");

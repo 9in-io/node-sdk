@@ -1,6 +1,6 @@
 {
     "name": "@9in-io/node",
-    "version": "4.2.0",
+    "version": "5.0.0",
     "description": "Official 9in SDK for Node.js, built on @9in-io/sdk: server-side sign-in, Express/Connect middleware for access tokens and webhooks, adapter v2 handler for node:http, and OTP delivery.",
     "keywords": [
         "9in",
@@ -36,21 +36,30 @@
         "node": ">=20.19"
     },
     "dependencies": {
-        "@9in-io/sdk": "^0.2.0 || ^0.3.0 || ^0.4.0"
+        "@9in-io/sdk": "^0.4.0"
     },
     "peerDependencies": {
-        "handlebars": "^4.7.8"
+        "handlebars": "^4.7.8",
+        "@aws-sdk/lib-dynamodb": "^3.0.0"
     },
     "peerDependenciesMeta": {
         "handlebars": {
             "optional": true
+        },
+        "@aws-sdk/lib-dynamodb": {
+            "optional": true
         }
     },
     "devDependencies": {
+        "@aws-sdk/client-dynamodb": "^3.1175.0",
+        "@aws-sdk/lib-dynamodb": "^3.1175.0",
         "@types/jest": "^29.5.14",
         "@types/node": "^22.10.0",
+        "dynalite": "^3.2.2",
         "handlebars": "^4.7.10",
+        "ioredis": "^5.11.1",
         "jest": "^29.7.0",
+        "redis": "^5.12.4",
         "ts-jest": "^29.2.5",
         "typescript": "~5.9.3"
     }

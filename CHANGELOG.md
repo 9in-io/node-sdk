@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 5.0.0 - 2026-11-23
+
+* `redisStore(client)` and `dynamoStore({client, table})`: shared stores for hybrid verification
+  and webhook de-duplication, so a revocation received by one process reaches every process.
+  Redis through node-redis (v4, v5) or ioredis; DynamoDB through `@aws-sdk/lib-dynamodb`. Neither
+  is a dependency of this package: pass the client you already have.
+* Requires `@9in-io/sdk` ^0.4.0.
+
+Breaking: SSOfy is gone, and so is what this package kept for it. See [MIGRATION.md](MIGRATION.md#4x--5x).
+
+* `SSOFY_*` environment variables are no longer read; use the `NINE_*` names. The `LEGACY_ENV`
+  export is removed, and `envSource()` only reports `NINE_*` names.
+* The unpublished SSOfy 2.x toolkit (`legacy/`) is deleted from the repository.
+
 ## 4.2.0 - 2026-11-22
 
 * Works with `@9in-io/sdk` 0.4. Its `createTokenVerifier` takes a shared `store`, which

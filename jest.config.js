@@ -15,7 +15,7 @@ module.exports = {
     testEnvironment: 'node',
     testEnvironmentOptions: {customExportConditions: [...(fromSource ? ['@9in/source'] : []), 'node', 'node-addons']},
     roots: ['<rootDir>/src'],
-    modulePathIgnorePatterns: ['<rootDir>/build', '<rootDir>/legacy'],
+    modulePathIgnorePatterns: ['<rootDir>/build'],
     transform: {
         '^.+\\.[tj]s$': ['ts-jest', {tsconfig: '<rootDir>/tsconfig.test.json'}],
     },

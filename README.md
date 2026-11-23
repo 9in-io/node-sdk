@@ -17,7 +17,7 @@ Official Node.js SDK for [9in](https://9in.io), built on [`@9in-io/sdk`](https:/
   client, refresh rotation, logout).
 - **`otpSender()` + notifiers** (Nodemailer, SendGrid, Mailgun, Mailchimp, SES, Twilio,
   Vonage, console) to deliver one-time codes for adapter users.
-- **`env()`**: `NINE_*` settings with the old `SSOFY_*` names as fallbacks.
+- **`env()`** and **`configFromEnv()`**: `NINE_*` settings.
 
 Requires Node.js 20.19+ (it `require()`s the ESM `@9in-io/sdk`).
 
@@ -25,8 +25,7 @@ Requires Node.js 20.19+ (it `require()`s the ESM `@9in-io/sdk`).
 npm install @9in-io/node
 ```
 
-Writing a browser app? Use `@9in-io/sdk` (`NineAuth`) directly. Upgrading from
-`@ssofy/node-sdk` 2.x? Read [MIGRATION.md](MIGRATION.md).
+Writing a browser app? Use `@9in-io/sdk` (`NineAuth`) directly.
 
 ## Protect an API
 
@@ -64,11 +63,35 @@ Missing, expired or foreign tokens get `401` with `WWW-Authenticate`. Pass
   - **Other modes:** `mode: 'local'` (the default without credentials) skips
     introspection; `'introspect'` asks 9in on every request.
   - **Opaque tokens:** `9in_at_…` tokens are introspected.
-  - **Several processes:** pass `store` (with `@9in-io/sdk` 0.4+), a store every process
-    shares, such as Redis: the process that receives the webhook writes a revocation marker
-    that every process checks, so the revocation reaches them all. The same store can be the
-    `dedupe` store. See [shared store](https://github.com/9in-io/sdk#several-instances-a-shared-store).
+  - **Several processes:** pass a shared `store` (below), so a revocation reaches them all.
   - **Errors:** introspection failures go to `next(error)` (a 500), not 401.
+
+### Several processes: a shared store
+
+By default each process keeps its answers in memory, so a revocation webhook only reaches the
+process that receives it. Give every process the same store: the one that gets the webhook writes
+a small revocation marker (for the token's `jti`, the session's `sid` or the user), and every
+process checks the markers before trusting a cached answer. The same store makes each webhook run
+once across processes.
+
+```ts
+import {createClient} from 'redis';   // or: import Redis from 'ioredis'
+import {redisStore, requireAuth, webhookHandler} from '@9in-io/node';
+
+const store = redisStore(await createClient({url: process.env.REDIS_URL}).connect());
+
+const auth = requireAuth({issuer, audience, clientId, clientSecret, store});
+app.post('/nine/webhook', webhookHandler(process.env.NINE_WEBHOOK_SECRET!, onEvent, {verifier: auth.verifier, dedupe: store}));
+```
+
+| Store | What you pass |
+|---|---|
+| `redisStore(client, {prefix?})` | A node-redis (v4, v5) or ioredis client. `add` is `SET NX EX`. Use an eviction policy that keeps keys until they expire (`noeviction` or `volatile-*`). |
+| `dynamoStore({client, table})` | A `DynamoDBDocumentClient` (`@aws-sdk/lib-dynamodb`) and a table whose partition key is `pk` (a string), with TTL on `expires_at`. `add` is a conditional put. |
+| Your own | Any object with `get`, `set`, `add` (atomic: only if the key is missing or expired), `delete` and optionally `getMany`. Not Workers KV, which is eventually consistent. |
+
+When the store can't be read, the verifier asks 9in; when a revocation can't be written,
+`webhookHandler` answers 500 so 9in delivers the event again.
 
 ## Sign users in (server-rendered apps)
 
@@ -113,7 +136,7 @@ import {ManagementClient} from '@9in-io/node';
 
 const nine = new ManagementClient({issuer, clientId, clientSecret});   // application with management scopes
 await nine.createUser({email: 'jane@acme.com', password: '…', email_verified: true});
-const {url} = await nine.createLoginLink(userId, {returnTo: 'https://app.acme.com/nine/callback'});   // replaces SSOfy auth/token
+const {url} = await nine.createLoginLink(userId, {returnTo: 'https://app.acme.com/nine/callback'});
 ```
 
 Users, sessions and events use 9in's snake_case field names, the same going in and coming
@@ -183,15 +206,16 @@ Next.js route handlers use `adapterHandler` from `@9in-io/sdk/server` directly.
 
 ## Configuration
 
-| Variable | Fallback |
+| Variable | Used for |
 |---|---|
-| `NINE_ISSUER` | `SSOFY_URL` |
-| `NINE_CLIENT_ID`, `NINE_CLIENT_SECRET` | `SSOFY_CLIENT_ID`, `SSOFY_CLIENT_SECRET` |
-| `NINE_ADAPTER_SECRET` | `SSOFY_ADAPTER_SECRET`, `SSOFY_API_SECRET` |
-| `NINE_WEBHOOK_SECRET` | `SSOFY_WEBHOOK_SECRET` |
+| `NINE_ISSUER` | Your tenant, e.g. `https://acme.9in.io` or your custom login domain |
+| `NINE_CLIENT_ID`, `NINE_CLIENT_SECRET` | A confidential application (sign-in, introspection, Management API) |
+| `NINE_REDIRECT_URI` | The callback URL registered for the application |
+| `NINE_AUDIENCE` | Your API's identifier |
+| `NINE_ADAPTER_SECRET` | The adapter (Connections → User database) signing secret |
+| `NINE_WEBHOOK_SECRET` | The webhook endpoint's signing secret |
 
-`env('ISSUER')` reads them; `configFromEnv()` returns all of them; `envSource('ISSUER')`
-tells you which variable was used.
+`env('ISSUER')` reads one; `configFromEnv()` returns all of them.
 
 Issuers must use `https://`: `ServerAuth`, `requireAuth`, `verifyAccessToken` and
 `ManagementClient` throw `insecure_issuer` otherwise (at setup, not per request). Plain http
@@ -206,9 +230,6 @@ npm test        # jest; includes an interop test against ../php (9in/php-sdk) wh
 npm run build
 ```
 
-`legacy/v1-toolkit/` holds the SSOfy 2.x datasource/repository toolkit (with an unfinished
-refactor). It is not built or published.
-
 ## License
 
-The MIT License (MIT). See [LICENSE](LICENSE). 9in and SSOfy are by [Cubelet Ltd](https://cubelet.co.uk).
+The MIT License (MIT). See [LICENSE](LICENSE). 9in is by [Cubelet Ltd](https://cubelet.co.uk).
